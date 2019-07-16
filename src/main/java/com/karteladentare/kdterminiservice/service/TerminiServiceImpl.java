@@ -1,6 +1,7 @@
 package com.karteladentare.kdterminiservice.service;
 
 import com.karteladentare.kdterminiservice.domain.Termini;
+import com.karteladentare.kdterminiservice.events.source.SimpleSourceBean;
 import com.karteladentare.kdterminiservice.exceptions.TerminiNotFoundException;
 import com.karteladentare.kdterminiservice.repository.TerminiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,12 @@ public class TerminiServiceImpl implements TerminiService {
 
     private TerminiRepository terminiRepository;
 
+    private SimpleSourceBean simpleSourceBean;
+
     @Autowired
-    public TerminiServiceImpl(TerminiRepository terminiRepository) {
+    public TerminiServiceImpl(TerminiRepository terminiRepository,SimpleSourceBean simpleSourceBean) {
         this.terminiRepository = terminiRepository;
+        this.simpleSourceBean = simpleSourceBean;
     }
 
     @Override
@@ -26,7 +30,10 @@ public class TerminiServiceImpl implements TerminiService {
 
     @Override
     public Termini shtoTerminin(Termini termini) {
-        return terminiRepository.save(termini);
+        Termini terminiSaved = terminiRepository.save(termini);
+        simpleSourceBean.publishTerminiChange("SAVE", terminiSaved.getId().toString());
+
+        return terminiSaved;
     }
 
     @Override

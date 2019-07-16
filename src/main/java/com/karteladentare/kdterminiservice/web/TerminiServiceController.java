@@ -72,9 +72,4 @@ public class TerminiServiceController {
         terminiService.shtoTerminin(t);
     }
 
-
-
-
-
-
 }
